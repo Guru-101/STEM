@@ -1,10 +1,18 @@
  # STEM_Core_bot
 
+import json
 # Class for defining the ChatBot
 class ChatBot:
     def __init__(self):
-        self.memory = {}
         self.history = []
+
+        try:
+            with open("memory.json","r") as file:
+                self.memory = json.load(file)        
+        except FileNotFoundError:
+            self.memory = {}
+        except json.JSONDecodeError:
+            self.memory = {}
 
     def reply(self, message):
         self.history.append(message)
@@ -18,7 +26,10 @@ class ChatBot:
             key = " ".join(words[1:is_index])
             value = " ".join(words[is_index+1:])
             self.memory[key] = value
-            return "I'll remember that, sir."
+
+            with open("memory.json","w") as file:
+                json.dump(self.memory,file)
+                return "I'll remember that, sir."
         
         elif message.lower().startswith("what is my"):
             words = message.split()
