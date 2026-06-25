@@ -7,22 +7,29 @@ class ChatBot:
         self.history = []
 
     def reply(self, message):
+        self.history.append(message)
 
         if message.lower() == "hello":
             return "Hi!"
         
-        elif "my name is" in message.lower():
+        elif " is " in message.lower() and message.lower().startswith("my "):
             words = message.split()
-            name = words[3]
-            self.memory["name"] = name
-            return f"Nice to meet you {name}"
+            is_index = words.index("is")
+            key = " ".join(words[1:is_index])
+            value = " ".join(words[is_index+1:])
+            self.memory[key] = value
+            return "I'll remember that, sir."
         
-        elif message.lower() =="what is my name":
+        elif message.lower().startswith("what is my"):
+            words = message.split()
+            key = " ".join(words[3:])
 
-            if "name" in self.memory:
-                return f"Your name is {self.memory['name']}"
+            if key in self.memory:
+                return f"Your {key} is {self.memory[key]}"
             else:
-                return "I don't understand."
+                return "I don't know that yet, sir."
+        else:
+            return "I don't understand that yet, sir."
 
             
 # Object
